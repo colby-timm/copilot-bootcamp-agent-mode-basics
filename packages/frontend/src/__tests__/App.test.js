@@ -1,4 +1,4 @@
-import React, { act } from 'react';
+import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { rest } from 'msw';
@@ -55,17 +55,13 @@ afterAll(() => server.close());
 
 describe('App Component', () => {
   test('renders the header', async () => {
-    await act(async () => {
-      render(<App />);
-    });
+    render(<App />);
     expect(screen.getByText('Hello World')).toBeInTheDocument();
     expect(screen.getByText('Connected to in-memory database')).toBeInTheDocument();
   });
 
   test('loads and displays items', async () => {
-    await act(async () => {
-      render(<App />);
-    });
+    render(<App />);
 
     // Initially shows loading state
     expect(screen.getByText('Loading data...')).toBeInTheDocument();
@@ -73,16 +69,14 @@ describe('App Component', () => {
     // Wait for items to load
     await waitFor(() => {
       expect(screen.getByText('Test Item 1')).toBeInTheDocument();
-      expect(screen.getByText('Test Item 2')).toBeInTheDocument();
     });
+    expect(screen.getByText('Test Item 2')).toBeInTheDocument();
   });
 
   test('adds a new item', async () => {
     const user = userEvent.setup();
 
-    await act(async () => {
-      render(<App />);
-    });
+    render(<App />);
 
     // Wait for items to load
     await waitFor(() => {
@@ -91,14 +85,10 @@ describe('App Component', () => {
 
     // Fill in the form and submit
     const input = screen.getByPlaceholderText('Enter item name');
-    await act(async () => {
-      await user.type(input, 'New Test Item');
-    });
+    await user.type(input, 'New Test Item');
 
     const submitButton = screen.getByText('Add Item');
-    await act(async () => {
-      await user.click(submitButton);
-    });
+    await user.click(submitButton);
 
     // Check that the new item appears
     await waitFor(() => {
@@ -114,9 +104,7 @@ describe('App Component', () => {
       })
     );
 
-    await act(async () => {
-      render(<App />);
-    });
+    render(<App />);
 
     // Wait for error message
     await waitFor(() => {
@@ -132,9 +120,7 @@ describe('App Component', () => {
       })
     );
 
-    await act(async () => {
-      render(<App />);
-    });
+    render(<App />);
 
     // Wait for empty state message
     await waitFor(() => {
@@ -145,21 +131,17 @@ describe('App Component', () => {
   test('deletes an item', async () => {
     const user = userEvent.setup();
 
-    await act(async () => {
-      render(<App />);
-    });
+    render(<App />);
 
     // Wait for items to load
     await waitFor(() => {
       expect(screen.getByText('Test Item 1')).toBeInTheDocument();
-      expect(screen.getByText('Test Item 2')).toBeInTheDocument();
     });
+    expect(screen.getByText('Test Item 2')).toBeInTheDocument();
 
     // Find and click the delete button for the first item
     const deleteButtons = screen.getAllByText('Delete');
-    await act(async () => {
-      await user.click(deleteButtons[0]);
-    });
+    await user.click(deleteButtons[0]);
 
     // Verify the item is removed from the UI
     await waitFor(() => {
